@@ -17,25 +17,23 @@ async function main() {
   console.log('[Discovery Runner] Initializing 24/7 Hackathon Discovery Sync...');
   
   let db = null;
-  if (firebaseConfig.apiKey && firebaseConfig.projectId) {
-    const app = initializeApp(firebaseConfig);
-    db = getFirestore(app);
-    const auth = getAuth(app);
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
 
-    const adminEmail = process.env.ADMIN_EMAIL;
-    const adminPassword = process.env.ADMIN_PASSWORD;
-
-    if (adminEmail && adminPassword) {
+  if (firebaseConfig.apiKey && firebaseConfig.projectId && adminEmail && adminPassword) {
+    try {
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
       console.log(`[Discovery Runner] Authenticating as admin (${adminEmail})...`);
-      try {
-        await signInWithEmailAndPassword(auth, adminEmail, adminPassword);
-        console.log('[Discovery Runner] Authenticated successfully with Firestore.');
-      } catch (authErr) {
-        console.warn('[Discovery Runner] Admin login note (will attempt anonymous/public write):', authErr.message);
-      }
+      await signInWithEmailAndPassword(auth, adminEmail, adminPassword);
+      console.log('[Discovery Runner] Authenticated successfully with Firestore.');
+      db = getFirestore(app);
+    } catch (authErr) {
+      console.warn('[Discovery Runner] Admin login failed. Operating in local JSON mode without Firestore sync:', authErr.message);
+      db = null;
     }
   } else {
-    console.log('[Discovery Runner] No Firebase credentials provided. Running in dry-run mode...');
+    console.log('[Discovery Runner] Running in local mode (no admin credentials provided)...');
   }
 
   const result = await executeDiscoveryPipeline({ db });

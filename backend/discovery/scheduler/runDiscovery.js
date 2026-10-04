@@ -122,7 +122,12 @@ export async function executeDiscoveryPipeline(options = {}) {
   // 3. Sync to Firestore if db instance is provided
   let firestoreResult = null;
   if (options.db) {
-    firestoreResult = await syncEventsToFirestore(options.db, validProcessedEvents, metrics);
+    try {
+      firestoreResult = await syncEventsToFirestore(options.db, validProcessedEvents, metrics);
+    } catch (syncErr) {
+      console.warn('[Discovery Engine] Firestore sync failed:', syncErr.message);
+      metrics.errors.push(`Firestore sync failed: ${syncErr.message}`);
+    }
   }
 
   // 4. Log clean summary (Section 23)
