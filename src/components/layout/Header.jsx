@@ -6,8 +6,8 @@ import SearchModal from '../ui/SearchModal';
 import ThemeToggle from '../ui/ThemeToggle';
 
 const NAV_LINKS = [
-  { to: '/',        label: 'Home' },
-  { to: '/browse',  label: 'Browse' },
+  { to: '/',       label: 'Home' },
+  { to: '/browse', label: 'Browse' },
 ];
 
 export default function Header({ onMenuClick, isMobileMenuOpen }) {
@@ -70,6 +70,7 @@ export default function Header({ onMenuClick, isMobileMenuOpen }) {
             width: '100%',
             maxWidth: 'var(--content-max-width)',
             margin: '0 auto',
+            padding: '0 var(--space-4)',
             gap: 'var(--space-4)',
           }}
         >

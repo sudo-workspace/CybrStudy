@@ -5,9 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/discover-hackathons.mjs",
     "build": "vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "discover": "node scripts/discover-hackathons.mjs",
+    "discover:sync": "node --env-file=.env scripts/discover-hackathons.mjs"
   },
   "dependencies": {
     "@google-cloud/local-auth": "^3.0.1",

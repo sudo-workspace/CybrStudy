@@ -28,15 +28,17 @@ export function AuthProvider({ children }) {
       setUser(firebaseUser);
 
       if (firebaseUser?.uid) {
-        // Register/refresh profile lastSeen
-        registerUserProfile(firebaseUser);
+        // Ensure this browser has a persistent session identifier in localStorage
+        const localSessionId = getOrCreateSessionId();
+
+        // Stamp localSessionId to Firestore immediately
+        await registerUserProfile(firebaseUser, localSessionId);
 
         // Check if admin
         const adminStatus = await checkIsAdmin(firebaseUser.email);
         setIsAdmin(adminStatus);
 
-        // Ensure this browser has a persistent session identifier in localStorage
-        const localSessionId = getOrCreateSessionId();
+        let sessionAcknowledged = false;
 
         // Real-time listener for single active device enforcement
         const userDocRef = doc(db, 'users', firebaseUser.uid);
@@ -51,14 +53,23 @@ export function AuthProvider({ children }) {
             return;
           }
 
-          // If the session in Firestore changed to another device, terminate this session
-          if (serverSessionId !== localSessionId) {
+          // When server acknowledges our session, mark it acknowledged
+          if (serverSessionId === localSessionId) {
+            sessionAcknowledged = true;
+            return;
+          }
+
+          // If the session in Firestore changed to another device AFTER this device was active, terminate this session
+          if (sessionAcknowledged && serverSessionId !== localSessionId) {
             console.warn('[CybrStudy] Account was logged in from another device. Terminating this session.');
             sessionStorage.setItem('cybrstudy_kicked_reason', 'another_device');
             logoutUser().finally(() => {
               setUser(null);
               setIsAdmin(false);
             });
+          } else if (!sessionAcknowledged) {
+            // First snapshot before local write finished propagating — stamp our current active session
+            registerUserProfile(firebaseUser, localSessionId);
           }
         }, (err) => {
           console.warn('[CybrStudy] Session listener warning:', err.message);

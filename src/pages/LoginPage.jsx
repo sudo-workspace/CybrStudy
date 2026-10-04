@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { loginUser, checkIsAdmin } from '../services/authService';
-import { ADMIN_BASE } from '../utils/constants';
+import { loginUser } from '../services/authService';
 
 export default function LoginPage() {
-  const { user, isAdmin, loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(() => {
@@ -21,17 +20,23 @@ export default function LoginPage() {
   const [submitting, setSubmitting] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // If already authenticated, redirect appropriately
+  // Resolve intended return destination without blindly sending admins to dashboard
+  const rawFrom = location.state?.from;
+  const destination = rawFrom
+    ? (typeof rawFrom === 'string'
+        ? rawFrom
+        : `${rawFrom.pathname || ''}${rawFrom.search || ''}${rawFrom.hash || ''}`)
+    : '/';
+  const targetDestination = destination && destination !== '/login' ? destination : '/';
+
+  // If already authenticated, return to intended destination or home
   useEffect(() => {
     if (!authLoading && user) {
-      if (isAdmin) {
-        navigate(`${ADMIN_BASE}/dashboard`, { replace: true });
-      } else {
-        navigate('/', { replace: true });
-      }
+      navigate(targetDestination, { replace: true });
     }
-  }, [user, isAdmin, authLoading, navigate]);
+  }, [user, authLoading, navigate, targetDestination]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,14 +51,9 @@ export default function LoginPage() {
     }
 
     try {
-      const credential = await loginUser(cleanEmail, password);
-      // Determine if user has admin privileges
-      const adminOk = await checkIsAdmin(credential.user.email);
-      if (adminOk) {
-        navigate(`${ADMIN_BASE}/dashboard`, { replace: true });
-      } else {
-        navigate('/', { replace: true });
-      }
+      await loginUser(cleanEmail, password);
+      // Navigate to user's intended target destination (or home)
+      navigate(targetDestination, { replace: true });
     } catch (err) {
       const code = err?.code ?? '';
       if (err.message && (err.message.includes('deactivated') || err.message.includes('disabled'))) {
@@ -116,13 +116,16 @@ export default function LoginPage() {
             <input
               id="user-email"
               type="email"
+              inputMode="email"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck="false"
               className="input-field"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               required
               autoComplete="email"
-              autoFocus
             />
           </div>
 
@@ -132,6 +135,9 @@ export default function LoginPage() {
               <input
                 id="user-password"
                 type={showPass ? 'text' : 'password'}
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck="false"
                 className="input-field"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -197,7 +203,12 @@ export default function LoginPage() {
         {/* No-signup notice */}
         <div className="user-login-divider"><span>New here?</span></div>
 
-        <div className="user-login-contact-box" id="user-login-contact-box">
+        <Link
+          to="/contact"
+          className="user-login-contact-box"
+          id="user-login-contact-box"
+          aria-label="Access is invite-only. Contact admin to request access."
+        >
           <div className="user-login-contact-icon" aria-hidden="true">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
@@ -205,21 +216,19 @@ export default function LoginPage() {
               <polyline points="22,6 12,13 2,6" />
             </svg>
           </div>
-          <div>
-            <p className="user-login-contact-title">Access is invite-only</p>
-            <p className="user-login-contact-sub">
-              No self-signup — to request access{', '}
-              <Link
-                to="/contact"
-                className="user-login-contact-link"
-                id="user-login-contact-link"
-              >
-                contact me
-              </Link>
-              .
-            </p>
+          <div className="user-login-contact-content">
+            <div className="user-login-contact-title">Access is invite-only</div>
+            <div className="user-login-contact-sub">
+              No self-signup — <span className="user-login-contact-cta">tap to contact admin</span>
+            </div>
           </div>
-        </div>
+          <div className="user-login-contact-arrow" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </div>
+        </Link>
 
         <p style={{ textAlign: 'center', marginTop: 'var(--space-4)', fontSize: 'var(--text-xs)', color: 'var(--color-text-3)' }}>
           CybrStudy · Secure Student & Admin Portal

@@ -285,6 +285,21 @@ export default function Sidebar({ sections = [], loading = false, isMobile = fal
               )}
             </Link>
 
+            <Link
+              to="/hackathons"
+              onClick={onClose}
+              className={`sidebar-root-link${pathname.startsWith('/hackathons') ? ' sidebar-root-link--active' : ''}`}
+              id="sidebar-nav-hackathons"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
+              <span className="sidebar-link-text">Hackathons</span>
+              <span className="badge badge-img" style={{ fontSize: '10px', padding: '1px 6px', marginLeft: 'auto' }}>
+                Live
+              </span>
+            </Link>
+
             {isAdmin && (
               <Link
                 to={`${ADMIN_BASE}/dashboard`}

@@ -353,22 +353,33 @@
   }
 }
 
+@media (max-width: 768px) {
+  .login-page {
+    padding: var(--space-8) var(--space-4);
+    min-height: 100dvh;
+    align-items: flex-start;
+  }
+  .login-card {
+    margin: auto 0;
+  }
+  .user-login-page .input-field,
+  .login-page input {
+    font-size: 16px !important;
+  }
+}
+
 @media (max-width: 480px) {
   .login-page {
-    padding: var(--space-3);
+    padding: var(--space-6) var(--space-3);
   }
   .login-card {
     padding: var(--space-6) var(--space-4) !important;
     border-radius: var(--radius-xl) !important;
+    width: 100% !important;
+    max-width: 100% !important;
   }
   .login-logo {
     margin-bottom: var(--space-5);
-  }
-  .user-login-contact-box {
-    padding: var(--space-3);
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
   }
   .dropzone {
     padding: var(--space-6) var(--space-3) !important;
@@ -384,7 +395,9 @@
 
 .user-login-page {
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
 }
 
 /* Soft radial glow behind the card */
@@ -433,20 +446,41 @@
   background: var(--color-border-light);
 }
 
-/* Invite-only / contact-me box */
+/* Invite-only / contact-me interactive card */
 .user-login-contact-box {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--space-3);
   background: var(--color-bg-alt);
-  border: 1px solid var(--color-border-light);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  text-decoration: none;
+  color: inherit;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.user-login-contact-box:hover,
+.user-login-contact-box:focus-visible {
+  background: var(--color-surface-2);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 1px var(--color-accent-border), var(--shadow-sm);
+  text-decoration: none;
+}
+
+.user-login-contact-box:active {
+  transform: scale(0.985);
+  background: var(--color-surface-2);
 }
 
 .user-login-contact-icon {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: var(--radius-md);
   background: var(--color-accent-bg);
   border: 1px solid var(--color-accent-border);
@@ -457,26 +491,47 @@
   flex-shrink: 0;
 }
 
+.user-login-contact-content {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
 .user-login-contact-title {
   font-size: var(--text-sm);
   font-weight: var(--fw-semibold);
   color: var(--color-text);
-  margin-bottom: var(--space-1);
+  margin-bottom: 2px;
+  line-height: 1.3;
 }
 
 .user-login-contact-sub {
   font-size: var(--text-xs);
   color: var(--color-text-3);
-  line-height: 1.5;
+  line-height: 1.4;
+  margin: 0;
 }
 
-.user-login-contact-link {
+.user-login-contact-cta {
   color: var(--color-accent);
-  text-decoration: none;
   font-weight: var(--fw-medium);
-  transition: opacity var(--transition-fast);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
-.user-login-contact-link:hover { opacity: 0.8; text-decoration: underline; }
+
+.user-login-contact-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-3);
+  flex-shrink: 0;
+  transition: transform var(--transition-fast), color var(--transition-fast);
+}
+
+.user-login-contact-box:hover .user-login-contact-arrow {
+  transform: translateX(3px);
+  color: var(--color-accent);
+}
 
 /* ---- Target Section Selector (Upload Screen) ---- */
 .target-section-box {
@@ -884,6 +939,250 @@
     width: 100%;
     padding-top: var(--space-2);
     border-top: 1px solid var(--color-border-light);
+  }
+}
+
+/* =============================================================
+   Admin Hackathons Management — Responsive Styles
+   ============================================================= */
+
+.admin-hackathon-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.admin-hackathons-header-actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.admin-hackathon-status-card {
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
+  margin-bottom: var(--space-6);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.admin-hackathon-status-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.admin-hackathon-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: var(--space-3);
+  background: var(--color-bg-alt);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+}
+
+.admin-hackathon-stat-box {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.admin-stat-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-3);
+}
+
+.admin-stat-value {
+  font-size: var(--text-lg);
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.admin-hackathon-toolbar {
+  display: flex;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.admin-hackathon-toolbar input {
+  flex: 1 1 240px;
+}
+
+.admin-hackathon-toolbar select {
+  width: auto;
+  min-width: 150px;
+}
+
+/* Table container (Desktop) */
+.admin-hackathon-table-container {
+  display: block;
+  overflow-x: auto;
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
+}
+
+/* Mobile cards container (Mobile only) */
+.admin-hackathon-cards-container {
+  display: none;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.admin-hackathon-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-hackathon-card-top {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.admin-hackathon-source-chip {
+  font-size: 10px;
+  color: var(--color-text-3);
+  background: var(--color-surface-2);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  margin-left: auto;
+}
+
+.admin-hackathon-card-title {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.admin-hackathon-card-host {
+  font-size: var(--text-xs);
+  color: var(--color-text-3);
+  margin: 0;
+}
+
+.admin-hackathon-card-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--color-bg-alt);
+  border-radius: var(--radius-md);
+  font-size: var(--text-xs);
+}
+
+.admin-hackathon-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.admin-hackathon-meta-label {
+  color: var(--color-text-3);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.admin-hackathon-card-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border-light);
+}
+
+.admin-hackathon-card-actions .btn {
+  min-height: 36px;
+  justify-content: center;
+  font-size: var(--text-xs);
+}
+
+/* Modal form grid */
+.admin-hackathon-modal-box {
+  max-width: 560px;
+  width: 100%;
+}
+
+.admin-modal-row-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.admin-modal-dates-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-2);
+}
+
+/* Responsive Admin Hackathons (< 768px) */
+@media (max-width: 768px) {
+  .admin-hackathon-table-container {
+    display: none !important;
+  }
+  .admin-hackathon-cards-container {
+    display: flex !important;
+  }
+  .admin-hackathon-header {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+  .admin-hackathons-header-actions {
+    width: 100%;
+  }
+  .admin-hackathons-header-actions .btn {
+    flex: 1 1 auto;
+    justify-content: center;
+    min-height: 40px;
+  }
+  .admin-hackathon-status-card {
+    padding: var(--space-4) !important;
+  }
+  .admin-hackathon-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: var(--space-2) !important;
+    padding: var(--space-3) !important;
+  }
+  .admin-hackathon-toolbar {
+    flex-direction: column;
+  }
+  .admin-hackathon-toolbar input,
+  .admin-hackathon-toolbar select {
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+  .admin-hackathon-modal-box {
+    width: 95vw !important;
+    max-height: 90dvh !important;
+    overflow-y: auto !important;
+    padding: var(--space-5) var(--space-4) !important;
+  }
+  .admin-modal-dates-grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-2) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-modal-row-grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-2) !important;
   }
 }
 

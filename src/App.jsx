@@ -1,4 +1,4 @@
-import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
@@ -9,6 +9,7 @@ import BrowsePage from './pages/BrowsePage';
 import LoginPage  from './pages/LoginPage';
 import AdminPage  from './pages/AdminPage';
 import ContactPage from './pages/ContactPage';
+import HackathonsPage from './pages/HackathonsPage';
 import { ADMIN_BASE } from './utils/constants';
 
 // HashRouter is required for GitHub Pages static hosting.
@@ -18,10 +19,11 @@ import { ADMIN_BASE } from './utils/constants';
  * Wraps any route that requires a logged-in user.
  * - While Firebase resolves auth state → shows a centered spinner.
  * - Logged in  → renders children normally.
- * - Logged out → redirects to /login.
+ * - Logged out → redirects to /login preserving return location.
  */
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) {
     return (
@@ -38,7 +40,7 @@ function ProtectedRoute({ children }) {
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   return children;
@@ -49,10 +51,11 @@ function ProtectedRoute({ children }) {
  * - While Firebase resolves auth state → shows a centered spinner.
  * - Logged in AND isAdmin → renders children.
  * - Logged in but NOT admin → redirects to home / (prevents privilege escalation).
- * - Logged out → redirects to /login.
+ * - Logged out → redirects to /login preserving return location.
  */
 function AdminRoute({ children }) {
   const { user, isAdmin, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) {
     return (
@@ -69,7 +72,7 @@ function AdminRoute({ children }) {
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   if (!isAdmin) {
@@ -96,6 +99,9 @@ export default function App() {
                 } />
                 <Route path="/browse/:sectionId" element={
                   <ProtectedRoute><Layout><BrowsePage /></Layout></ProtectedRoute>
+                } />
+                <Route path="/hackathons" element={
+                  <ProtectedRoute><Layout><HackathonsPage /></Layout></ProtectedRoute>
                 } />
 
                 {/* ---- Unified Login (public) ---- */}

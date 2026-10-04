@@ -77,7 +77,28 @@ export const loginAdmin = loginUser;
 
 /** Sign out (shared for admin and regular users) */
 export async function logoutAdmin() {
+  const currentUid = auth.currentUser?.uid;
   clearSessionId();
+  try {
+    sessionStorage.removeItem('cybrstudy_kicked_reason');
+  } catch {}
+
+  // Explicitly clear active session in Firestore so next login doesn't conflict
+  if (currentUid) {
+    try {
+      await setDoc(
+        doc(db, 'users', currentUid),
+        {
+          currentSessionId: null,
+          sessionUpdatedAt: serverTimestamp(),
+        },
+        { merge: true }
+      );
+    } catch (e) {
+      console.warn('[CybrStudy] Note clearing session in Firestore:', e.message);
+    }
+  }
+
   return signOut(auth);
 }
 export const logoutUser = logoutAdmin;

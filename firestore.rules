@@ -41,6 +41,24 @@ service cloud.firestore {
       allow write: if isAdmin() && !isAccountDisabled();
     }
 
+    // Hackathons — public directory of tech events & hackathons; only verified admins can modify
+    match /hackathons/{document=**} {
+      allow read:  if true;
+      allow write: if isAdmin() && !isAccountDisabled();
+    }
+
+    // Source Runs (Discovery Execution Logs) — public can view discovery sync status; only admins can write
+    match /sourceRuns/{document=**} {
+      allow read:  if true;
+      allow write: if isAdmin() && !isAccountDisabled();
+    }
+
+    // Sources registry configuration — active authenticated users can read; only admins can write
+    match /sources/{document=**} {
+      allow read:  if isSignedIn() && !isAccountDisabled();
+      allow write: if isAdmin() && !isAccountDisabled();
+    }
+
     // Users collection:
     // - Regular users can only read & write their OWN document (e.g. updating profile / session timestamp)
     // - Users CANNOT modify their own `disabled` or `isAdmin` fields (prevents privilege escalation)

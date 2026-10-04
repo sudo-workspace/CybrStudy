@@ -81,6 +81,24 @@ service cloud.firestore {
       allow write: if isAdmin() && !isAccountDisabled();
     }
 
+    // Hackathons — active authenticated users can read; only verified admins can modify
+    match /hackathons/{document=**} {
+      allow read:  if isSignedIn() && !isAccountDisabled();
+      allow write: if isAdmin() && !isAccountDisabled();
+    }
+
+    // Source Runs (Discovery Logs) — active authenticated users can read; only admins can write
+    match /sourceRuns/{document=**} {
+      allow read:  if isSignedIn() && !isAccountDisabled();
+      allow write: if isAdmin() && !isAccountDisabled();
+    }
+
+    // Sources registry configuration — active authenticated users can read; only admins can write
+    match /sources/{document=**} {
+      allow read:  if isSignedIn() && !isAccountDisabled();
+      allow write: if isAdmin() && !isAccountDisabled();
+    }
+
     // Users — users can only manage their own doc; cannot escalate isAdmin or disabled
     match /users/{uid} {
       allow read: if isSignedIn() && (request.auth.uid == uid || isAdmin());
@@ -216,7 +234,62 @@ CybrStudy/
 └── README.md
 ```
 
+---
+
+## 24/7 Autonomous Hackathon Discovery Engine
+
+CybrStudy includes a lightweight, automated background hackathon discovery system that continuously aggregates, validates, normalizes, and deduplicates student hackathons across India and worldwide.
+
+### Pipeline Architecture
+
+```text
+       EXTERNAL SOURCES (APIs & Public Feeds)
+      [ Devfolio API | Unstop API | Curated Registry ]
+                           │
+                           ▼
+                   SOURCE CONNECTORS
+                           │
+                           ▼
+                    DATA EXTRACTION
+                           │
+                           ▼
+                    NORMALIZATION
+        (Standard modes: virtual, physical, hybrid,
+         ISO dates, cities/states, currency)
+                           │
+                           ▼
+                     VALIDATION
+          (Required fields, non-junk check,
+           expiry threshold detection)
+                           │
+                           ▼
+                    DEDUPLICATION
+         (Deterministic cryptographic fingerprint)
+                           │
+                           ▼
+                 FIRESTORE DATABASE
+             (/hackathons & /sourceRuns)
+                           │
+                           ▼
+              CYBRSTUDY WEB INTERFACE
+      - Homepage spotlight with live 24/7 engine badge
+      - Full interactive /#/hackathons portal
+      - Admin management & on-demand sync dashboard
+```
+
+### Automation & Scheduled Execution
+
+- **GitHub Actions Scheduled Cron** (`.github/workflows/hackathon-discovery.yml`): Runs automatically every 6 hours (`0 */6 * * *`) and on `workflow_dispatch`.
+- **Zero Frontend Scraping**: The web application only reads clean, structured data from Firestore.
+- **Local / CLI Execution**:
+  ```bash
+  npm run discover          # Runs discovery and prints formatted audit report
+  npm run discover:sync     # Runs discovery and syncs directly to Firestore
+  ```
+
+---
 
 System Architecture -
 <img width="10951" height="9492" alt="diagram(2)" src="https://github.com/user-attachments/assets/b6d0531b-14ed-486b-8e5f-9085bfbcec2d" />
+
 

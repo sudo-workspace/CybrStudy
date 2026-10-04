@@ -8,6 +8,7 @@ import TargetSectionSelector from '../components/admin/TargetSectionSelector';
 import FileUploader from '../components/admin/FileUploader';
 import UserManager from '../components/admin/UserManager';
 import NotificationManager from '../components/admin/NotificationManager';
+import HackathonManager from '../components/admin/HackathonManager';
 import Spinner from '../components/ui/Spinner';
 import { useToast } from '../context/ToastContext';
 import ThemeToggle from '../components/ui/ThemeToggle';
@@ -15,6 +16,7 @@ import ThemeToggle from '../components/ui/ThemeToggle';
 const TABS = [
   { id: 'sections',      label: 'Sections',      icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> },
   { id: 'upload',        label: 'Upload Files',  icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg> },
+  { id: 'hackathons',    label: 'Hackathons',    icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> },
   { id: 'notifications', label: 'Notifications', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> },
   { id: 'users',         label: 'Users',         icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> },
 ];
@@ -51,31 +53,58 @@ export default function AdminPage() {
 
   return (
     <div className="admin-layout">
+      {/* Mobile Drawer Overlay */}
+      {mobileNavOpen && (
+        <div
+          className="sidebar-mobile-overlay"
+          onClick={() => setMobileNavOpen(false)}
+          style={{ zIndex: 99 }}
+        />
+      )}
+
       {/* Sidebar */}
       <aside className={`admin-sidebar${mobileNavOpen ? ' admin-sidebar--open' : ''}`}>
-        <Link
-          to="/"
-          className="admin-sidebar-logo"
-          style={{ textDecoration: 'none', cursor: 'pointer' }}
-          title="Go to Homepage"
-          id="admin-logo-home-link"
-        >
-          <div style={{
-            width: 36, height: 36, borderRadius: 'var(--radius-lg)',
-            background: 'var(--color-accent-muted)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            flexShrink: 0,
-            transition: 'background var(--transition-fast)',
-          }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" strokeWidth="1.5" strokeLinecap="round">
-              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-            </svg>
-          </div>
-          <div>
-            <h2 style={{ fontSize: 'var(--text-md)', color: 'var(--color-text)' }}>CybrStudy</h2>
-            <span style={{ color: 'var(--color-text-3)' }}>Admin Panel</span>
-          </div>
-        </Link>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+          <Link
+            to="/"
+            className="admin-sidebar-logo"
+            style={{ textDecoration: 'none', cursor: 'pointer', flex: 1, borderBottom: 'none', paddingBottom: 0, marginBottom: 0 }}
+            title="Go to Homepage"
+            id="admin-logo-home-link"
+          >
+            <div style={{
+              width: 36, height: 36, borderRadius: 'var(--radius-lg)',
+              background: 'var(--color-accent-muted)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              flexShrink: 0,
+              transition: 'background var(--transition-fast)',
+            }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" strokeWidth="1.5" strokeLinecap="round">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              </svg>
+            </div>
+            <div>
+              <h2 style={{ fontSize: 'var(--text-md)', color: 'var(--color-text)' }}>CybrStudy</h2>
+              <span style={{ color: 'var(--color-text-3)' }}>Admin Panel</span>
+            </div>
+          </Link>
+
+          {mobileNavOpen && (
+            <button
+              type="button"
+              className="btn btn-ghost btn-sm btn-icon"
+              onClick={() => setMobileNavOpen(false)}
+              aria-label="Close admin menu"
+              style={{ flexShrink: 0 }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          )}
+        </div>
+        <div style={{ height: 1, background: 'var(--color-border-light)', margin: 'var(--space-2) 0 var(--space-4)' }} />
 
         {/* Navigation tabs */}
         {TABS.map((tab) => (
@@ -177,6 +206,9 @@ export default function AdminPage() {
             />
           </div>
         )}
+
+        {/* Hackathons tab */}
+        {activeTab === 'hackathons' && <HackathonManager />}
 
         {/* Users tab */}
         {activeTab === 'users' && <UserManager />}

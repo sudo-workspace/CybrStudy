@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useSections, buildTree } from '../hooks/useSections';
 import { subscribeToAllFiles } from '../services/firebase';
 import NotificationBanner from '../components/ui/NotificationBanner';
+import HackathonSection from '../components/hackathons/HackathonSection';
 
 function SectionCard({ node }) {
   const childCount = countDescendants(node);
@@ -259,7 +260,7 @@ export default function HomePage() {
 
         {sectionsLoading ? (
           <div className="sections-card-grid">
-            {[...Array(4)].map((_, i) => (
+            {[...Array(5)].map((_, i) => (
               <div key={i} className="skeleton" style={{ height: 160, borderRadius: 'var(--radius-xl)' }} />
             ))}
           </div>
@@ -275,10 +276,13 @@ export default function HomePage() {
           </div>
         ) : (
           <div className="sections-card-grid animate-fade-in">
-            {tree.map((node) => <SectionCard key={node.id} node={node} />)}
+            {tree.slice(0, 5).map((node) => <SectionCard key={node.id} node={node} />)}
           </div>
         )}
       </section>
+
+      {/* 24/7 Automated Hackathons Section */}
+      <HackathonSection />
 
       {/* Feature Strip */}
       <section
