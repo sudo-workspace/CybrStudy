@@ -295,4 +295,12 @@ System Architecture -
 
 ---
 
+## Copyright and Usage Rights
+
+© 2026 Aniruddha Rameshwar Raut (sudo-workspace). All Rights Reserved.
+
+This repository and its contents are available for public viewing only. You may read the source code, but you may NOT clone, download, copy, modify, distribute, or host this codebase elsewhere without explicit written permission from the author.
+
+---
+
 
