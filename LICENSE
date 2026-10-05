@@ -1,5 +1,23 @@
-## Copyright and Usage Rights
+PROPRIETARY SOFTWARE LICENSE AGREEMENT
 
-© 2026 Aniruddha Rameshwar Raut (sudo-workspace). All Rights Reserved.
+Copyright (c) 2026 Aniruddha Rameshwar Raut (sudo-workspace). All Rights Reserved.
 
-This repository and its contents are available for public viewing only. You may read the source code, but you may NOT clone, download, copy, modify, distribute, or host this codebase elsewhere without explicit written permission from the author.
+1. OWNERSHIP AND RESERVATION OF RIGHTS
+This software, including all source code, documentation, assets, and associated files (the "Software"), is strictly proprietary. The author retains all rights, title, and interest in and to the Software. No intellectual property rights are transferred to any person or entity accessing this repository.
+
+2. PROHIBITED ACTIONS
+Unless explicitly authorized in writing by the author, you are strictly prohibited from:
+a) Cloning, downloading, or reproducing the Software in any physical or digital medium.
+b) Modifying, adapting, altering, or creating derivative works based upon the Software.
+c) Distributing, sublicensing, selling, renting, or monetizing the Software or any of its components.
+d) Deploying, hosting, or executing the Software on any server, platform, or local environment.
+e) Extracting, reverse-engineering, or incorporating any portion of this codebase into other public, private, or commercial projects.
+
+3. GITHUB TERMS OF SERVICE EXCEPTION
+As this repository is hosted publicly on GitHub, the author grants only the minimum mandatory rights required by the GitHub Terms of Service. Users are permitted to view the source code through the GitHub interface and use the built-in "Fork" functionality solely within the GitHub ecosystem. Forking this repository does NOT constitute a waiver of the restrictions outlined in Section 2, nor does it grant any license to use, modify, or distribute the code.
+
+4. NO WARRANTY
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE.
+
+5. ENFORCEMENT
+Any unauthorized use, reproduction, or distribution of this Software constitutes a direct violation of international copyright law. The author reserves the right to issue automated Digital Millennium Copyright Act (DMCA) takedown notices to third-party hosts and pursue maximum legal and financial remedies against infringing parties.
