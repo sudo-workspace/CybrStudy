@@ -290,6 +290,9 @@ CybrStudy includes a lightweight, automated background hackathon discovery syste
 ---
 
 System Architecture -
-<img width="10951" height="9492" alt="diagram(2)" src="https://github.com/user-attachments/assets/b6d0531b-14ed-486b-8e5f-9085bfbcec2d" />
+
+<img width="14323" height="7940" alt="diagram(5)" src="https://github.com/user-attachments/assets/78868a07-3120-4b73-860f-3644b2c213b9" />
+
+---
 
 
